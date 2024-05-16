@@ -33,6 +33,9 @@ router.get('/login', publicAccess, ViewsController.getLogin)
 
 router.get('/', privateAccess, ViewsController.getProfile)
 
+router.get('/reset-password', ViewsController.getPasswordResetForm)
+router.get('/change-password', ViewsController.getPasswordChangeForm)
+
 router.get('*', ViewsController.get404)
 
 module.exports = router; 

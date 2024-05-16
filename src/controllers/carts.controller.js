@@ -1,4 +1,4 @@
-const { cartsService } = require("../repositories");
+const { cartsService, itemsService } = require("../repositories");
 
 class CartsController {
 
@@ -28,6 +28,11 @@ class CartsController {
         const itemId = req.params.iid; 
         
         try {
+            const item = await itemsService.getById(itemId);
+            if(req.user.role == 'premium' && item.owner == req.user.email){
+                throw new Error(`can't add item to cart. because it belongs to you`) 
+            }
+            
             const result = await cartsService.addItem(id, itemId)
             res.send({status:'success', payload: result})
         } catch (error) {

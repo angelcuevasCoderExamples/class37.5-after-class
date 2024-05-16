@@ -30,6 +30,7 @@ class ItemsController {
     static async create(req, res, next){
         try {
             const {description, category} = req.body; 
+            
             if(!description || !category){
                 throw new CustomError({
                     name:"missing properties creating item",
@@ -38,7 +39,11 @@ class ItemsController {
                     code: ErrorTypes.INVALID_TYPE_ERROR
                 })
             }
-    
+            
+            if(req.user.role == 'premium'){
+                req.body.owner = req.user.email; 
+            }
+
             await itemsService.create(req.body)
             const items = await itemsService.getAll();
             req.io.emit('list updated',{items:items})
@@ -69,6 +74,11 @@ class ItemsController {
     static async delete(req, res, next){
         const id = req.params.id; 
         try {
+            const item = await itemsService.getById(id);
+            if(req.user.role == 'premium' && item.owner != req.user.email){
+                throw new Error(`can't delete item. It does not belong to you`) 
+            }
+
             const result = await itemsService.delete(id);
             res.send({status:'success', details: result})        
         }catch (error) {

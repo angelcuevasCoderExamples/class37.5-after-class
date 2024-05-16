@@ -26,6 +26,7 @@ class UsersService {
     }
 
     async update(id, toy){
+        console.log('---->', id, toy)
         await this.dao.getById(id);
         return await this.dao.update(id, toy);
     }

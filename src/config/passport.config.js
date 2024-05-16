@@ -19,16 +19,14 @@ const initializePassport = ()=>{
         try {
             existingUser = await usersService.getByProperty("email", email)    
         } catch (error) {
-            req.logger.info('user by that email already exist')
-            return done(null, false, {message:'user by that email already exist'})
-        }
 
+        }
+        
         
         try {
 
             const {first_name, last_name } = req.body;
             if(!first_name || !last_name ) return done(null, false, {message:'incomplete parameters'})
-            
             if(existingUser) return done(null, false, {message:'user by that email already exist'})
             
             const cart = await cartsService.create();
@@ -53,6 +51,7 @@ const initializePassport = ()=>{
         session:false,
         passReqToCallback: true,
     }, async (req, email, password, done)=>{
+        console.log("LOGIN IN")
         try {               
 
             const user = await usersService.getByProperty("email",email);

@@ -17,6 +17,7 @@ const { mocksRouter } = require('./routes/mock.router');
 const errorHandling = require('./middlewares/errorHandling.middleware');
 const addLogger = require('./middlewares/addLogger.middleware');
 const { loggerRouter } = require('./routes/logger.router');
+const { usersRouter } = require('./routes/users.router');
 
 const app = express();
 
@@ -84,6 +85,7 @@ app.use('/api/carts', cartRouter);
 app.use('/api/sessions', sessionRouter)
 app.use('/api/mocks', mocksRouter)
 app.use('/api/logger', loggerRouter)
+app.use('/api/users', usersRouter )
 app.use('/', viewsRouter)
 
 app.use(errorHandling)

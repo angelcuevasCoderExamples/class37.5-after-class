@@ -34,6 +34,11 @@ sessionRouter.get('/githubcallback', passport.authenticate('github', {failureRed
 
 sessionRouter.get('/current', getToken, SessionController.getCurrent)
 
+sessionRouter.post('/reset-password', SessionController.resetPassword)
+
+sessionRouter.get('/changePassword/:passwordResetToken', SessionController.verifyToken)
+sessionRouter.post('/change-password', SessionController.changePassword)
+
 module.exports = {
     sessionRouter: sessionRouter
 };

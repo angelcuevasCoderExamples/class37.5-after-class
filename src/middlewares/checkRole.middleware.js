@@ -1,8 +1,12 @@
-const checkRole = (role)=>(req, res, next)=>{
+const checkRole = (roles)=>(req, res, next)=>{
     const user = req.user; 
 
-    if(user.role != role){
-        return res.status(403).send({status:'error', error:`Unauthorized. You are not a ${role}`})
+    if(!Array.isArray(roles)){
+        roles=[roles]
+    }
+
+    if(!roles.includes(user.role)){ 
+        return res.status(403).send({status:'error', error:`Unauthorized. You are not a ${roles}`})
     }
 
     next();

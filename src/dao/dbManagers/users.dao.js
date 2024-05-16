@@ -8,7 +8,7 @@ class UsersDao {
     }
 
     async getById(id){
-        return await userModel.findOne({_id:id}).populate('items.item').lean()
+        return await userModel.findOne({_id:id}).lean()
     }
 
     async getByProperty(property, name){

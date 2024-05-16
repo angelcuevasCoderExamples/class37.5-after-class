@@ -89,6 +89,21 @@ class ViewsController {
         }
     }
 
+    static getPasswordResetForm(req, res){
+        try{
+            res.render('password-reset',{user: {}})
+        } catch (error) {
+            res.status(error.status || 500).send({status:'error', error: error.message})
+        }
+    }
+    static getPasswordChangeForm(req, res){
+        try{
+            res.render('password-change',{user: {}})
+        } catch (error) {
+            res.status(error.status || 500).send({status:'error', error: error.message})
+        }
+    }
+
     static get404(req, res){
         res.send({status:'error', message:`404 Not found, there's nothing on ${req.path}`})
     }

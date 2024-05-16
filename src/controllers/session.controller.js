@@ -3,6 +3,8 @@ const { jwtSecret } = require('../config/config');
 const MailingService = require('../services/mailing.service');
 const CustomError = require('../utils/errorHandling/CustomError');
 const ErrorTypes = require('../utils/errorHandling/ErrorTypes');
+const { usersService } = require('../repositories');
+const { hashPassword, isValidPassword } = require('../utils');
 
 const mailingService = new MailingService();
 
@@ -77,6 +79,55 @@ class SessionController {
         const user = req.user; 
         const userDTO= new UserDTO(user);
         res.send({payload: userDTO})
+    }  
+
+    static async resetPassword(req, res){
+        try {
+            const {email} = req.body; 
+            let user = await usersService.getByProperty("email",email)
+            const passwordResetToken = jwt.sign(user,jwtSecret,{expiresIn:'1h'}) 
+
+            await mailingService.sendPasswordResetMail(user, email, passwordResetToken)
+            res.send({payload: true})
+        } catch (error) {
+            res.status(500).send({status:'error', error: error.message})
+        }
+    }  
+
+    static async verifyToken(req, res){
+        const {passwordResetToken} = req.params; 
+
+        try {
+            jwt.verify(passwordResetToken, jwtSecret, (error)=>{
+                if(error){
+                    return res.redirect('/reset-password')
+                }
+                res.redirect('/change-password')
+            })
+        } catch (error) {
+            res.status(500).send({status:'error', error: error.message})
+        }
+    }  
+
+    static async changePassword(req, res){
+
+        try {
+            const {email, password} = req.body; 
+            let user = await usersService.getByProperty("email",email)
+            if(isValidPassword(user, password)){
+                return res.status(400).send({status:'erorr', error:'same password'})
+            }
+
+            user.password = password;
+
+
+            await usersService.update(user._id.toString(), {$set: {password: hashPassword(user.password)}})
+
+            res.send({status: 'success'})
+        } catch (error) {
+            console.log("ERROR", error)
+            res.status(500).send({status:'error', error: error.message})
+        }
     }  
 
 }

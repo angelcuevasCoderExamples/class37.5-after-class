@@ -9,7 +9,7 @@ router.post('/', CartsController.create)
 
 router.get('/:id', CartsController.getById)
 
-router.post('/:id/item/:iid', getToken, checkRole('user'), CartsController.addItem)
+router.post('/:id/item/:iid', getToken, checkRole(['user','premium']), CartsController.addItem)
 
 /** nuevos */
 router.delete('/:id/item/:iid', CartsController.deleteItem)

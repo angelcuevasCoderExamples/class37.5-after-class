@@ -7,7 +7,11 @@ const itemSchema = new mongoose.Schema({
     },
     category: String,
     price: Number,
-    stock: Number 
+    stock: Number,
+    owner: {
+        type:String,
+        default: 'admin'
+    } 
 })
 itemSchema.plugin(mongoosePaginate)
 const itemModel = mongoose.model('items', itemSchema)
